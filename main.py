@@ -35,7 +35,8 @@ def add_name(message):
             new_row = pd.DataFrame({'reactive': name, 'amount': 0}, index=[0])
             data = pd.concat([data, new_row]).reset_index(drop=True)
             data.to_csv('reactives.csv', index=False)
-            sh.add_worksheet(title=name, rows="100", cols="20")
+            worksheet = sh.add_worksheet(title=name, rows="100", cols="20")
+            worksheet.update('T1', str(2))
             msg = bot.send_message(message.chat.id,
                                    'Введи текущее количество реактива. (Например, 4)')
             bot.register_next_step_handler(msg, add_amount, name)
@@ -192,8 +193,10 @@ def take_amount(message, name):
             data.loc[name]['amount'] -= int(message.text)
             data.to_csv('reactives.csv')
             worksheet = sh.worksheet(name)
-            val = int(worksheet.acell('T1').value)
-            print(val, type(val))
+            val = worksheet.acell('T1').value
+            if val is None:
+                val = 2
+            val = int(val)
             worksheet.update(f'A{val}', str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
             worksheet.update(f'B{val}', message.from_user.first_name + " " + message.from_user.last_name)
             worksheet.update(f'C{val}', str(int(message.text)))
