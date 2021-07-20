@@ -1,0 +1,11 @@
+df = pd.DataFrame({'reactive': ['red', 'blue', 'yellow', 'green'],
+                   'amount': [14, 15, 16, 17]})
+df.to_csv('reactives.csv', index=False)
+
+
+
+
+
+name = 'blue'
+data = pd.read_csv('reactives.csv', index_col='reactive')
+print(data.loc[name]['amount'])
